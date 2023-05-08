@@ -1,7 +1,7 @@
 ##R script for reading and cleaning dendrometer data and exporting analysis files
 
 # install if necessary
-packages <- (c("devtools","zoo","chron","dplyr","viridis", "RCurl", "DT"))
+packages <- (c("devtools","zoo","chron","dplyr","viridis", "RCurl", "DT","lubridate"))
 install.packages(setdiff(packages, rownames(installed.packages())))
 devtools::install_github("treenet/treenetproc")
 
@@ -13,6 +13,8 @@ library(viridis)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+
+getwd()
 
 # helper functions
 left <-  function(string, char){substr(string, 1,char)}
