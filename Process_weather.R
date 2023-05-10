@@ -107,6 +107,14 @@ Slicedaily_SM_shallow<- apply.daily(Slice_daily_SM_shallow_set, mean)
 #compile into a datasheet for analysis
 compiled_dat_2022 <- cbind(Slice_max_temp,Slice_min_temp,Slice_max_temp_shade,Slice_min_temp_shade,Slice_max_VPD, Slice_min_VPD, Slice_rain, Slice_dailySM_deep, Slicedaily_SM_shallow)
 colnames(compiled_dat_2022) <- c("Max_temp_F","Min_temp_F","Max_temp_shade_F","Min_temp_shade_F", "Max_VPD_kPa","Min_VPD_kPa","Precip_in","SM_1m_m3/m3","SM_20cm_m3/m3")
+#recover Datetime column
+d <- compiled_dat_2022
+Datetime <- rownames(d)
+rownames(d) <- NULL
+compiled_dat_2022 <- cbind(Datetime,d)
+compiled_dat_2022 <- compiled_dat_2022 %>% mutate(Datetime = ymd_hms(Datetime))
+
+compiled_dat_2022$doy <- yday(compiled_dat_2022$Datetime)
 
 write.csv(compiled_dat_2022,file = "Cleaning/2022_weather_cleaned.csv")
 
