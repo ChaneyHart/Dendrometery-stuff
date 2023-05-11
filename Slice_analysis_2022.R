@@ -1,4 +1,6 @@
 ### Analysis of stem dendrometer growth and tree water deficit
+install.packages("ggtext")
+
 library(GGally)
 library(xts)
 library(lubridate)
@@ -6,6 +8,7 @@ library(dplyr)
 library(reshape2)
 library(RColorBrewer)
 library(gridExtra)
+library(ggtext)
 
 #read in dendrometry data
 
@@ -105,64 +108,74 @@ ggsave(filename = "Graph/Slice_analysis_corrplot_twd.png", plot =Slice_analysis_
 
 #Plotting interesting correlations
 
-scale_color_gradientn(colors = Greens)
 
 gro_1 <- ggplot(Slice_analysis_2022, aes(x=Max_VPD_kPa, y = gro_rate, shape = series))+
   geom_point(aes(color = SM_20cm_m3.m3))+
-  xlab("Canopy VPD (daily max kPa")+
+  xlab("Canopy VPD (daily max kPa)")+
   ylab("Daily growth rate (µm/day)")+
-  scale_color_gradientn(colors = rainbow(3))
+  scale_color_gradientn(colors = rainbow(3))+
+  theme_bw()+
+  theme(legend.position="none")
+  
 
 gro_1 
 
 
 gro_2 <- ggplot(Slice_analysis_2022, aes(x=Max_temp_F, y = gro_rate, shape = series))+
   geom_point(aes(color = SM_20cm_m3.m3))+
-  xlab("Canopy temp (daily max ˚F")+
+  xlab("Canopy temp (daily max ˚F)")+
   ylab("Daily growth rate (µm/day)")+
-  scale_color_gradientn(colors = rainbow(3))
+  scale_color_gradientn(colors = rainbow(3))+
+  theme_bw()+
+  theme(legend.position="none")
+  
 
 gro_2
 
 gro_3 <- ggplot(Slice_analysis_2022, aes(x=Max_VPD_kPa, y = mean_twd, shape = series))+
   geom_point(aes(color = SM_20cm_m3.m3))+
-  xlab("Canopy temp (daily max ˚F")+
+  xlab("Canopy VPD (daily max kPa)")+
   ylab("Mean daily tree water deficit (µm)")+
-  scale_color_gradientn(colors = magma(3))
+  scale_color_gradientn(colors = rainbow(3))+
+  theme_bw()+
+  theme(legend.position="none")
+  
 
 gro_3
 
 gro_4 <- ggplot(Slice_analysis_2022, aes(x=Max_temp_F, y = mean_twd, shape = series))+
   geom_point(aes(color = SM_20cm_m3.m3))+
-  xlab("Canopy temp (daily max ˚F")+
+  xlab("Canopy temp (daily max ˚F)")+
   ylab("Mean daily tree water deficit (µm)")+
-  scale_color_gradientn(colors = magma(3))
+  scale_color_gradientn(colors = rainbow(3))+
+  theme_bw()+
+  theme(legend.position="none")
+  
 
 gro_4
 
 
-grid.arrange(gro_1,gro_2,gro_3,gro_4, nrows =2)
+Corr_figure <- grid.arrange(gro_1,gro_2,gro_3,gro_4, nrow =1)
+ggsave(filename = "Graph/Correlations_figure.png", plot = Corr_figure, width = 12, height = 3, units = "in", dpi=300)
 
 
+gro_legend <- ggplot(Slice_analysis_2022, aes(x=Max_temp_F, y = mean_twd, shape = series))+
+  geom_point(aes(color = SM_20cm_m3.m3))+
+  xlab("Canopy temp (daily max ˚F)")+
+  ylab("Mean daily tree water deficit (µm)")+
+  scale_color_gradientn(colors = rainbow(3), name = "Soil moisture (daily m<sup>3</sup>/m<sup>3</sup>)")+
+  theme_bw()+
+  theme(legend.title = element_markdown())
+  
+
+gro_legend  
+
+ggsave(filename = "Corr_plot_legend.png", plot = gro_legend, dpi = 300)
 
 
-
-#temp
-ggplot(Slice_analysis1, aes(x=Max_temp_F, y = exp_slope, color = series))+
-  geom_point()
-
-ggplot(Slice_analysis1, aes(x=Max_temp_F, y = shrink_slope, color = series))+
-  geom_point()
+  
 
 
-##establishing a model
-#purpose of the model is explanatory rather than predictive.
-#Goal is to understand relative contribution of climate variables on growth and shrink rate (slope)
-##our features are very correlated with each other, some are clearly redundant (i.e. multiple temperature measurements)
-
-#Based on desire to model conditions in the wood, temperature in the shade is appropriate
-#VPD in the open better represents canopy-level conditions that are relevant
-#both soil mositure
 
 
 
